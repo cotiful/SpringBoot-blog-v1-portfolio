@@ -1,9 +1,12 @@
 package site.metacoding.blogv1.web;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +21,7 @@ import site.metacoding.blogv1.domain.user.UserRepository;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final HttpSession session;
 
     // 회원가입 페이지
     @GetMapping("/join-form")
@@ -39,8 +43,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(HttpServletRequest request, User user) {
-        HttpSession session = request.getSession();
+    public String login(User user) {
         User userEntity = userRepository.mLogin(user.getUsername(), user.getPassword());
         if (userEntity == null) {
             System.out.println("아이디 혹은 패스워드가 틀렸습니다.");
@@ -53,8 +56,25 @@ public class UserController {
 
     // 유저 상세 페이지
     @GetMapping("/user/{id}")
-    public String detailForm(@PathVariable Integer id) {
-        return "user/detail";
+    public String detailForm(@PathVariable Integer id, Model model) {
+
+        User principal = (User) session.getAttribute("principal");
+
+        if (principal == null) {
+            return "error/page1";
+        }
+        if (principal.getId() != id) {
+            return "error/page1";
+        }
+
+        Optional<User> userOp = userRepository.findById(id);
+        if (userOp.isPresent()) {
+            User userEntity = userOp.get();
+            model.addAttribute("user", userEntity);
+            return "user/detailForm";
+        } else {
+            return "error/page1";
+        }
     }
 
     // 유저 수정 페이지
