@@ -2,7 +2,9 @@ package site.metacoding.blogv1.web;
 
 import java.util.Optional;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -47,24 +49,42 @@ public class UserController {
     }
 
     @GetMapping("/login-form")
-    public String loginForm() {
+    public String loginForm(HttpServletRequest request, Model model) {
+
+        if (request.getCookies() != null) {
+            Cookie[] cookies = request.getCookies(); // JS
+            for (Cookie cookie : cookies) {
+                System.out.println("쿠키값" + cookie.getName());
+                if (cookie.getName().equals("remember")) {
+                    model.addAttribute("remember", cookie.getValue());
+                    System.out.println("쿠키 밸류 어떻게 생겼노" + cookie.getValue());
+                }
+            }
+        }
+
         return "user/loginForm";
     }
 
     @PostMapping("/login")
-    public String login(User user) {
+    public String login(User user, HttpServletResponse response) {
+
         User userEntity = userRepository.mLogin(user.getUsername(), user.getPassword());
+
         if (userEntity == null) {
             System.out.println("아이디 혹은 패스워드가 틀렸습니다.");
         } else {
             System.out.println("로그인 되었습니다");
             session.setAttribute("principal", userEntity);
+
+            if (user.getRemember() != null && user.getRemember().equals("on")) {
+                response.setHeader("Set-Cookie", "remember=" + user.getUsername());
+            }
         }
         return "redirect:/";
     }
 
     // 유저 상세 페이지
-    @GetMapping("/user/{id}")
+    @GetMapping("/s/user/{id}")
     public String detailForm(@PathVariable Integer id, Model model) {
 
         User principal = (User) session.getAttribute("principal");
@@ -93,11 +113,12 @@ public class UserController {
     }
 
     // 유저수정 - 로그인 하고 난 후
-    @PutMapping("/user/{id}")
+    @PutMapping("/s/user/{id}")
     public String update(@PathVariable Integer id) {
         return "redirect:/user/" + id;
     }
 
+    // 로그아웃
     @GetMapping("/logout")
     public String logout() {
         session.invalidate();
