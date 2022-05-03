@@ -32,6 +32,15 @@ public class UserController {
     // 회원가입 페이지 - 로그인 하기전
     @PostMapping("/join")
     public String join(User user) {
+
+        if (user.getUsername() == null || user.getPassword() == null || user.getEmail() == null) {
+            return "redirect:/join-form";
+        }
+        if (user.getUsername().equals(" ") || user.getPassword().equals(" ") || user.getEmail().equals(" ")) {
+            return "redirect:/join-form";
+        }
+
+        // 핵심로직
         User userEntity = userRepository.save(user);
         return "redirect:/login-form";
 
@@ -91,7 +100,8 @@ public class UserController {
 
     @GetMapping("/logout")
     public String logout() {
-        return "메인페이지를 돌려주면 됨";
+        session.invalidate();
+        return "redirect:/login-form";
     }
 
 }
