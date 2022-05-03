@@ -87,7 +87,7 @@ public class UserController {
     }
 
     // 유저 수정 페이지
-    @GetMapping("/user/{id}/update-form")
+    @GetMapping("/user/update-form")
     public String updateForm() {
         return "user/updateForm";
     }
