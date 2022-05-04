@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
@@ -121,10 +122,25 @@ public class UserController {
         return "user/updateForm";
     }
 
+    // requestbody -> bufferedReader
+    // responseBody -> BufferedWriter
     // 유저수정 - 로그인 하고 난 후
     @PutMapping("/s/user/{id}")
-    public String update(@PathVariable Integer id) {
-        return "redirect:/user/" + id;
+    public @ResponseBody ResponseDto<String> update(@PathVariable Integer id, @RequestBody User user) {
+        User principal = (User) session.getAttribute("principal");
+
+        // 1. 인증체크
+        if (principal == null) {
+            return new ResponseDto<String>(1, "인증안됨", null);
+        }
+        // 2.권한체크
+        if (principal.getId() != id) {
+            return new ResponseDto<String>(1, "권한 없어", null);
+        }
+
+        User userEntity = userService.유저수정(id, user);
+        session.setAttribute("principal", userEntity);
+        return new ResponseDto<String>(1, "성공", null);
     }
 
     // 로그아웃
