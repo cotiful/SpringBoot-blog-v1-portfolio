@@ -18,25 +18,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import lombok.RequiredArgsConstructor;
 import site.metacoding.blogv1.domain.user.User;
 import site.metacoding.blogv1.domain.user.UserRepository;
+import site.metacoding.blogv1.service.UserService;
 import site.metacoding.blogv1.web.dto.ResponseDto;
 
 @RequiredArgsConstructor
 @Controller
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final HttpSession session;
 
     // 유저중복
     @GetMapping("/api/user/username/same-check")
     public @ResponseBody ResponseDto<String> sameCheck(String username) {
-        User userEntity = userRepository.mUsernameSameCheck(username);
-
-        if (userEntity == null) {
-            return new ResponseDto<String>(1, "통신성공", "없어");
-        } else {
-            return new ResponseDto<String>(1, "통신성공", "있어");
-        }
+        String data = userService.유저네임중복검사(username);
+        return new ResponseDto<String>(1, "통신성공", data);
 
     }
 
@@ -58,7 +54,7 @@ public class UserController {
         }
 
         // 핵심로직
-        User userEntity = userRepository.save(user);
+        userService.회원가입(user);
         return "redirect:/login-form";
 
     }
@@ -83,19 +79,18 @@ public class UserController {
     @PostMapping("/login")
     public String login(User user, HttpServletResponse response) {
 
-        User userEntity = userRepository.mLogin(user.getUsername(), user.getPassword());
+        User userEntity = userService.로그인(user);
 
-        if (userEntity == null) {
-            System.out.println("아이디 혹은 패스워드가 틀렸습니다.");
-        } else {
-            System.out.println("로그인 되었습니다");
+        if (userEntity != null) {
             session.setAttribute("principal", userEntity);
 
             if (user.getRemember() != null && user.getRemember().equals("on")) {
                 response.setHeader("Set-Cookie", "remember=" + user.getUsername());
             }
+            return "redirect:/";
+        } else {
+            return "redirect:/login-form";
         }
-        return "redirect:/";
     }
 
     // 유저 상세 페이지
@@ -111,18 +106,17 @@ public class UserController {
             return "error/page1";
         }
 
-        Optional<User> userOp = userRepository.findById(id);
-        if (userOp.isPresent()) {
-            User userEntity = userOp.get();
+        User userEntity = userService.유저정보보기(id);
+        if (userEntity == null) {
+            return "error/page1";
+        } else {
             model.addAttribute("user", userEntity);
             return "user/detailForm";
-        } else {
-            return "error/page1";
         }
     }
 
     // 유저 수정 페이지
-    @GetMapping("/user/update-form")
+    @GetMapping("/s/user/update-form")
     public String updateForm() {
         return "user/updateForm";
     }

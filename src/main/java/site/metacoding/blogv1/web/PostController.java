@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
@@ -19,13 +20,14 @@ import lombok.RequiredArgsConstructor;
 import site.metacoding.blogv1.domain.post.Post;
 import site.metacoding.blogv1.domain.post.PostRepository;
 import site.metacoding.blogv1.domain.user.User;
+import site.metacoding.blogv1.service.PostService;
 
 @RequiredArgsConstructor
 @Controller
 public class PostController {
 
     private final HttpSession session;
-    private final PostRepository postRepository;
+    private final PostService postService;
 
     // 글쓰기 페이지
     @GetMapping("/s/post/write-form")
@@ -42,8 +44,9 @@ public class PostController {
     public String list(@RequestParam(defaultValue = "0") Integer page, Model model) {
         // model.addAttribute("posts",
         // postRepository.findAll(Sort.by(Sort.Direction.DESC, "id")));
-        PageRequest pq = PageRequest.of(page, 3);
-        model.addAttribute("posts", postRepository.findAll(pq));
+
+        Page<Post> pagePosts = postService.글목록보기(page);
+        model.addAttribute("posts", pagePosts);
         model.addAttribute("prevPage", page - 1);
         model.addAttribute("nextPage", page + 1);
         return "post/list";
@@ -52,17 +55,13 @@ public class PostController {
     // 글 상세보기
     @GetMapping("/post/{id}")
     public String detailForm(@PathVariable Integer id, Model model) {
-        Optional<Post> postOp = postRepository.findById(id);
-
-        if (postOp.isPresent()) {
-            Post postEntity = postOp.get();
-            model.addAttribute("post", postEntity);
-            System.out.println("===========================================");
-            return "post/detailForm";
-        } else {
+        Post postEntity = postService.글상세보기(id);
+        if (postEntity == null) {
             return "error/page1";
+        } else {
+            model.addAttribute("post", postEntity);
+            return "post/detailForm";
         }
-
     }
 
     // 글 수정페이지
@@ -91,9 +90,7 @@ public class PostController {
             return "redirect:/login-form";
         }
         User principal = (User) session.getAttribute("principal");
-        post.setUser(principal);
-
-        postRepository.save(post);
+        postService.글쓰기(post, principal);
 
         return "redirect:/";
     }
