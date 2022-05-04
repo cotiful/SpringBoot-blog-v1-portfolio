@@ -3,6 +3,7 @@ package site.metacoding.blogv1.web;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +34,8 @@ public class PostController {
 
     // 메인 페이지
     @GetMapping({ "/", "/post/list" })
-    public String list() {
+    public String list(Model model) {
+        model.addAttribute("posts", postRepository.findAll());
         return "post/list";
     }
 
