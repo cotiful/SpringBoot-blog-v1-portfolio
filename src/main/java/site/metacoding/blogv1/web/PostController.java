@@ -49,6 +49,7 @@ public class PostController {
         if (postOp.isPresent()) {
             Post postEntity = postOp.get();
             model.addAttribute("post", postEntity);
+            System.out.println("===========================================");
             return "post/detailForm";
         } else {
             return "error/page1";
