@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
 import site.metacoding.blogv1.domain.user.User;
 import site.metacoding.blogv1.domain.user.UserRepository;
+import site.metacoding.blogv1.web.dto.ResponseDto;
 
 @RequiredArgsConstructor
 @Controller
@@ -24,6 +26,19 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final HttpSession session;
+
+    // 유저중복
+    @GetMapping("/api/user/username/same-check")
+    public @ResponseBody ResponseDto<String> sameCheck(String username) {
+        User userEntity = userRepository.mUsernameSameCheck(username);
+
+        if (userEntity == null) {
+            return new ResponseDto<String>(1, "통신성공", "없어");
+        } else {
+            return new ResponseDto<String>(1, "통신성공", "있어");
+        }
+
+    }
 
     // 회원가입 페이지
     @GetMapping("/join-form")

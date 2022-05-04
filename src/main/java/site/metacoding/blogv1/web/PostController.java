@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import lombok.RequiredArgsConstructor;
 import site.metacoding.blogv1.domain.post.Post;
@@ -34,10 +37,15 @@ public class PostController {
         return "post/writeForm";
     }
 
-    // 메인 페이지
+    // 메인 페이지, 글목록페이지
     @GetMapping({ "/", "/post/list" })
-    public String list(Model model) {
-        model.addAttribute("posts", postRepository.findAll());
+    public String list(@RequestParam(defaultValue = "0") Integer page, Model model) {
+        // model.addAttribute("posts",
+        // postRepository.findAll(Sort.by(Sort.Direction.DESC, "id")));
+        PageRequest pq = PageRequest.of(page, 3);
+        model.addAttribute("posts", postRepository.findAll(pq));
+        model.addAttribute("prevPage", page - 1);
+        model.addAttribute("nextPage", page + 1);
         return "post/list";
     }
 
