@@ -1,5 +1,7 @@
 package site.metacoding.blogv1.web;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -41,8 +43,17 @@ public class PostController {
 
     // 글 상세보기
     @GetMapping("/post/{id}")
-    public String detail(@PathVariable Integer id) {
-        return "post/detailForm";
+    public String detailForm(@PathVariable Integer id, Model model) {
+        Optional<Post> postOp = postRepository.findById(id);
+
+        if (postOp.isPresent()) {
+            Post postEntity = postOp.get();
+            model.addAttribute("post", postEntity);
+            return "post/detailForm";
+        } else {
+            return "error/page1";
+        }
+
     }
 
     // 글 수정페이지
