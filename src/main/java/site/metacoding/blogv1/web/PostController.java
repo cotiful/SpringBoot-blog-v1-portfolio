@@ -15,12 +15,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import lombok.RequiredArgsConstructor;
 import site.metacoding.blogv1.domain.post.Post;
 import site.metacoding.blogv1.domain.post.PostRepository;
 import site.metacoding.blogv1.domain.user.User;
 import site.metacoding.blogv1.service.PostService;
+import site.metacoding.blogv1.web.dto.ResponseDto;
 
 @RequiredArgsConstructor
 @Controller
@@ -72,8 +74,19 @@ public class PostController {
 
     // 글 삭제
     @DeleteMapping("/s/post/{id}")
-    public String delete(@PathVariable Integer id) {
-        return "redirect:/";
+    public @ResponseBody ResponseDto<String> delete(@PathVariable Integer id) {
+        User principal = (User) session.getAttribute("principal");
+
+        if (principal == null) {
+            return new ResponseDto<String>(-1, "로그인이 되지 않았습니다", null);
+        }
+        Post postEntity = postService.글상세보기(id);
+
+        if (principal.getId() != postEntity.getUser().getId()) {
+            return new ResponseDto<String>(-1, "해당글은 삭제하실 수 없습니다.", null);
+        }
+        postService.글삭제하기(id);
+        return new ResponseDto<String>(1, "성공", null);
     }
 
     // update 글 수정
