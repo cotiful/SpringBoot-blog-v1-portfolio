@@ -57,13 +57,22 @@ public class PostController {
     // 글 상세보기
     @GetMapping("/post/{id}")
     public String detailForm(@PathVariable Integer id, Model model) {
+        User principal = (User) session.getAttribute("principal");
+
         Post postEntity = postService.글상세보기(id);
+
         if (postEntity == null) {
             return "error/page1";
-        } else {
-            model.addAttribute("post", postEntity);
-            return "post/detailForm";
         }
+        if (principal != null) {
+            if (principal.getId() == postEntity.getUser().getId()) {
+                model.addAttribute("pageOwner", true);
+            } else {
+                model.addAttribute("pageOwner", false);
+            }
+        }
+        model.addAttribute("post", postEntity);
+        return "post/detailForm";
     }
 
     // 글 수정페이지
