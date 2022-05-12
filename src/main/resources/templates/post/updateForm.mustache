@@ -9,7 +9,7 @@
             <input type="text" class="form-control" placeholder="Enter title" id="title" value="{{post.title}}">
         </div>
         <div class="mb-3">
-                <textarea id="content" class="form-control" rows="10">{{post.content}}</textarea>
+                <textarea id="content" class="form-control" rows="10" id="summernote">{{post.content}}</textarea>
         </div>
         <button type="button" class="btn btn-secondary" id="btn-update">글쓰기 수정완료</button>
     </form>
@@ -17,6 +17,10 @@
     </div>
 
     <script>
+     $("#content").summernote({
+         height :300
+     });
+
         async function update(){
             let id = $("#id").val();
 
