@@ -83,7 +83,7 @@ public class UserController {
         User userEntity = userService.로그인(user);
 
         if (userEntity != null) {
-            session.setAttribute("principal", userEntity);
+            session.setAttribute("principal", userEntity); // 세션을 principal이라는 key 값으로 정해줌
 
             if (user.getRemember() != null && user.getRemember().equals("on")) {
                 response.setHeader("Set-Cookie", "remember=" + user.getUsername());
