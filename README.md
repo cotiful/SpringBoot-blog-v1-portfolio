@@ -49,7 +49,7 @@ spring:
 ### 기능정리
 1. 엔티티 생성 완료 및 UI 작업중 
 2. 유저 관련 UI 완성
-<img src="/static/img/1.회원가입 화면.png"  width="700" height="370">
+<img width="1377" alt="1 회원가입 화면" src="https://user-images.githubusercontent.com/97711674/168036716-c76b865f-00f6-4725-aa6a-3ff0d434ddc5.png">
 3. 회원가입 로그인 처리 완료
 4. 회원 정보 보기 및 유효성 검사 
 5. 로그아웃 처리
