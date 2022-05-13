@@ -45,8 +45,29 @@ spring:
     ansi:
       enabled: always
 ```
+### 4.기술스택
 
-### 4.기능정리
+### Backend
+|<img src = "https://blog.kakaocdn.net/dn/cKtAuQ/btrAIO5fzCU/NVWnU8UlhL93kq81Ve87uK/img.png" width="150" height="150" />|
+|:--:|
+|SpringBoot  |
+
+### Frontend
+|<img src = "https://blog.kakaocdn.net/dn/cj5mLL/btrAJSMQt43/yfpTni01hZgrvKHmUdVjk1/img.png" width="150" height="150" />|<img src = "https://blog.kakaocdn.net/dn/eG2w1k/btrAD5NJ1dy/YwmkEkygLgmKevkYNgWiPk/img.png" width="150" height="150" />|<img src = "https://blog.kakaocdn.net/dn/dJtW2R/btrAIfhLlRL/cTJDpEZlRWh9m9QczAkGqK/img.png" width="150" height="150" />|<img src = "https://blog.kakaocdn.net/dn/biJtm8/btrAGfWUCEm/wLv8P9GuJP55PI0AWxOyS1/img.png" width="150" height="150" />|<img src = "https://blog.kakaocdn.net/dn/m3Phc/btrAGgBsKbm/FNYpkhIrVweUUEH4h5tsWK/img.png" width="150" height="150" />|
+|:--:|:--:|:--:|:--:|:--:|
+|HTML5|CSS|jQuery|Bootstrap|JavaScript|
+
+### 형상관리 도구
+|<img src = "https://blog.kakaocdn.net/dn/eyjfrN/btrAKvXV0RA/zkyytdkZy7ESd85knYRDq1/img.png" width="150" height="150" />|<img src = "https://blog.kakaocdn.net/dn/mEK9t/btrAHjxWZX3/iEGILm2rWSrOKsfilmPUA1/img.png" width="150" height="150" />|
+|:--:|:--:|
+|Git|Github|
+
+### 데이터베이스
+|<img src = "https://blog.kakaocdn.net/dn/5J8iY/btrAHiseB54/P1Pkgmigz1aANiQLg0Aip0/img.png" width="150" height="150" />|
+|:--:|
+|MariaDB|
+
+### 5.기능정리
 1. 엔티티 생성 완료 및 UI 작업중 
 
 ***
